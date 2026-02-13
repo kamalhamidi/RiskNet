@@ -1,0 +1,478 @@
+═══════════════════════════════════════════════════════════════════════════════
+GUIDE D'UTILISATION COMPLET - GNN STUDENT RISK DETECTION
+═══════════════════════════════════════════════════════════════════════════════
+
+TABLE DES MATIÈRES:
+  1. Installation
+  2. Structure du Projet
+  3. Utilisation Basique
+  4. Tuning Avancé
+  5. Dépannage
+  6. Production Deployment
+
+═══════════════════════════════════════════════════════════════════════════════
+1. INSTALLATION
+═══════════════════════════════════════════════════════════════════════════════
+
+PRÉ-REQUIS:
+  • Python ≥ 3.8
+  • pip ou conda
+  • ~2 GB RAM libre
+  • GPU (optionnel, mais recommandé pour datasets > 10k étudiants)
+
+ÉTAPE 1: Cloner/Télécharger le projet
+  ```
+  cd /Users/mac/Desktop/KAMAL/EDUCATION/MSID/S3/TG/Project/new\ model
+  ```
+
+ÉTAPE 2: Créer environnement virtuel
+  ```bash
+  python -m venv venv
+  source venv/bin/activate  # Mac/Linux
+  # ou
+  venv\Scripts\activate  # Windows
+  ```
+
+ÉTAPE 3: Installer dépendances
+  ```bash
+  pip install torch==2.0.0
+  pip install torch-geometric
+  pip install numpy pandas scikit-learn matplotlib seaborn scipy
+  ```
+
+ÉTAPE 4: Vérifier installation
+  ```python
+  python -c "import torch; import torch_geometric; print('✅ OK')"
+  ```
+
+═══════════════════════════════════════════════════════════════════════════════
+2. STRUCTURE DU PROJET
+═══════════════════════════════════════════════════════════════════════════════
+
+new\ model/
+  ├── students.csv                    # Dataset académique (395 étudiants)
+  ├── script.ipynb                    # Notebook Jupyter exécutable
+  ├── gnn_student_risk.py             # Modules principaux
+  ├── DOCUMENTATION_COMPLETE.md       # Théorie complète
+  ├── FINAL_RESULTS_REPORT.txt        # Résultats finaux
+  ├── GUIDE_USAGE.txt                 # Ce fichier
+  │
+  ├── models/
+  │   └── best_model.pt               # Poids du meilleur modèle (généré)
+  │
+  └── results/
+      ├── 01_correlation_matrix.png
+      ├── 02_training_curves.png
+      ├── 03_roc_curve.png
+      ├── 04_confusion_matrix.png
+      ├── 05_embeddings_tsne.png
+      ├── 06_train_test_comparison.png
+      └── 07_error_analysis.png
+
+═══════════════════════════════════════════════════════════════════════════════
+3. UTILISATION BASIQUE
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION A: Jupyter Notebook (Recommandé pour exploration)
+──────────────────────────────────────────────────────────
+
+  1. Démarrer Jupyter:
+     ```bash
+     jupyter notebook
+     ```
+
+  2. Ouvrir: script.ipynb
+
+  3. Exécuter cellules séquentiellement (Shift + Enter)
+
+  4. Visualiser résultats interactifs
+
+OPTION B: Script Python Standalone (Recommandé pour production)
+────────────────────────────────────────────────────────────────
+
+  1. Créer fichier: train_model.py
+  
+  ```python
+  from gnn_student_risk import *
+  
+  # 1. Charger données
+  analyzer = DataAnalyzer('students.csv')
+  X_scaled, y, features = analyzer.prepare_features()
+  
+  # 2. Construire graphe
+  gc = GraphConstructor(X_scaled, y, k=10)
+  edges, weights = gc.compute_edge_weights()
+  data = gc.create_pyg_data(edges, weights)
+  
+  # 3. Split train/test
+  train_idx, test_idx, y_train, y_test = train_test_split(
+      np.arange(len(y)), y, train_size=0.8, 
+      stratify=y, random_state=42
+  )
+  
+  # 4. Modèle
+  model = HybridGNNModel(input_dim=9, hidden_dims=[64,64,32])
+  
+  # 5. Entraînement
+  trainer = GNNTrainer(model, device='cuda')
+  trainer.train(train_data, test_data, epochs=150)
+  
+  # 6. Évaluation
+  evaluator = RobustEvaluator(model, device='cuda')
+  metrics = evaluator.print_report(y_test, y_pred_proba)
+  
+  # 7. Sauvegarder modèle
+  torch.save(model.state_dict(), 'best_model.pt')
+  ```
+
+  2. Exécuter:
+     ```bash
+     python train_model.py
+     ```
+
+═══════════════════════════════════════════════════════════════════════════════
+4. TUNING AVANCÉ
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 TUNING MANUEL DES HYPERPARAMÈTRES
+─────────────────────────────────────
+
+Parameters à ajuster:
+
+  A. Graphe:
+     • k (nombre voisins):
+       - Valeur actuelle: 10
+       - Range recommandée: [5, 15]
+       - Augmenter → connexions plus nombreuses → lissage plus fort
+       - Diminuer → connexions plus sélectives → variation locale
+     
+     • sigma (bandwidth Gaussienne):
+       - Actuel: percentile 75
+       - Alternatives: percentile 50, 60, 90
+       - Impacte pondération des arêtes
+  
+  B. Architecture:
+     • hidden_dims:
+       - Actuel: [64, 64, 32]
+       - Alternatives: [32, 32, 16], [128, 128, 64]
+       - Plus grand → plus expressif (risque overfitting)
+       - Plus petit → plus simple (underfitting)
+     
+     • num_heads (GAT):
+       - Actuel: 8
+       - Alternatives: 4, 16
+       - Plus d'heads → plus de perspectives
+     
+     • dropout:
+       - Actuel: [0.3, 0.3, 0.2]
+       - Alternatives: [0.2, 0.2, 0.1] ou [0.5, 0.5, 0.3]
+       - Plus élevé → plus de régularisation
+  
+  C. Optimisation:
+     • learning_rate:
+       - Actuel: 0.001
+       - Alternatives: [1e-4, 0.01]
+       - Plus grand → convergence rapide (instabilité)
+       - Plus petit → convergence lente (stabilité)
+     
+     • weight_decay (L2 régularisation):
+       - Actuel: 5e-4
+       - Alternatives: [1e-5, 1e-3]
+     
+     • epochs:
+       - Actuel: 150
+       - Évaluer convergence: voir training curves
+     
+     • patience (early stopping):
+       - Actuel: 20
+       - Alternatives: [10, 30]
+
+4.2 OPTIMISATION AUTOMATIQUE (OPTUNA)
+──────────────────────────────────────
+
+Installation:
+  ```bash
+  pip install optuna
+  ```
+
+Exemple:
+  ```python
+  import optuna
+  from optuna.samplers import TPESampler
+  
+  def objective(trial):
+      # Suggérer hyperparamètres
+      k = trial.suggest_int('k', 5, 15)
+      hidden_dim = trial.suggest_int('hidden_dim', 32, 128, step=32)
+      dropout = trial.suggest_float('dropout', 0.1, 0.5)
+      lr = trial.suggest_float('lr', 1e-4, 1e-2, log=True)
+      
+      # Construire modèle
+      model = HybridGNNModel(
+          input_dim=9,
+          hidden_dims=[hidden_dim, hidden_dim, hidden_dim//2],
+          dropout=dropout
+      )
+      
+      # Entraîner et évaluer
+      trainer = GNNTrainer(model, device='cuda', learning_rate=lr)
+      trainer.train(train_data, test_data, epochs=100)
+      evaluator = RobustEvaluator(model, device='cuda')
+      
+      # Retourner métrique d'optimisation
+      auc = evaluator.compute_all_metrics(y_test, y_pred)[0]['auc']
+      return auc
+  
+  # Lancer optimisation
+  study = optuna.create_study(
+      direction='maximize',
+      sampler=TPESampler(seed=42)
+  )
+  study.optimize(objective, n_trials=50, n_jobs=1)
+  
+  # Afficher meilleurs paramètres
+  print("Best params:", study.best_params)
+  print("Best AUC:", study.best_value)
+  ```
+
+═══════════════════════════════════════════════════════════════════════════════
+5. DÉPANNAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLÈME: ModuleNotFoundError: No module named 'torch_geometric'
+SOLUTION:
+  ```bash
+  pip install --upgrade torch-geometric
+  pip install torch-scatter torch-sparse
+  ```
+
+PROBLÈME: CUDA OutOfMemory
+SOLUTION:
+  • Réduire batch size (option dans DataLoader)
+  • Utiliser device='cpu'
+  • Réduire hidden_dims
+
+PROBLÈME: Modèle diverge (loss → inf)
+SOLUTION:
+  • Réduire learning_rate (try 1e-4)
+  • Activer gradient clipping (déjà dans code)
+  • Normaliser features (déjà fait avec RobustScaler)
+
+PROBLÈME: Poor performance sur données réelles
+SOLUTION:
+  • Vérifier formato données (shape, dtype)
+  • Augmenter epochs si courbes pas stabilisées
+  • Tuner hyperparamètres avec Optuna
+  • Vérifier class imbalance (peut nécessiter Focal Loss)
+
+PROBLÈME: Val AUC ne s'améliore plus
+SOLUTION:
+  • Modèle convergé → arrêt normal
+  • Si désire amélioration: Ensemble methods
+  • Ou: Acquire plus de données
+
+═══════════════════════════════════════════════════════════════════════════════
+6. PRODUCTION DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+6.1 SAUVEGARDE DU MODÈLE
+───────────────────────
+
+  ```python
+  import pickle
+  
+  # Sauvegarder modèle
+  torch.save(model.state_dict(), 'models/student_risk_gnn.pt')
+  
+  # Sauvegarder scaler pour normalization
+  pickle.dump(scaler, open('models/scaler.pkl', 'wb'))
+  
+  # Sauvegarder métadonnées
+  metadata = {
+      'input_dim': 9,
+      'hidden_dims': [64, 64, 32],
+      'num_heads': 8,
+      'dropout': 0.3,
+      'train_auc': 0.9794,
+      'test_auc': 0.9900,
+      'threshold': 0.45  # Seuil de décision recommandé
+  }
+  pickle.dump(metadata, open('models/metadata.pkl', 'wb'))
+  ```
+
+6.2 CHARGER & PRÉDIRE
+──────────────────────
+
+  ```python
+  import pickle
+  
+  # Charger modèle
+  model = HybridGNNModel(input_dim=9, hidden_dims=[64,64,32])
+  model.load_state_dict(torch.load('models/student_risk_gnn.pt'))
+  model.eval()
+  
+  # Charger scaler
+  scaler = pickle.load(open('models/scaler.pkl', 'rb'))
+  
+  # Charger métadonnées
+  metadata = pickle.load(open('models/metadata.pkl', 'rb'))
+  threshold = metadata['threshold']
+  
+  # Préparer données nouvelles
+  X_new = pd.read_csv('new_students.csv')
+  X_new_scaled = scaler.transform(X_new)
+  
+  # Construire graphe pour new data (NOTE: refaire avec historique)
+  gc = GraphConstructor(X_new_scaled, k=10)
+  edges, weights = gc.compute_edge_weights()
+  data_new = gc.create_pyg_data(edges, weights)
+  
+  # Prédire
+  with torch.no_grad():
+      y_pred_proba = model(data_new).cpu().numpy()
+  
+  # Appliquer seuil
+  y_pred = (y_pred_proba > threshold).astype(int)
+  
+  # Générer rapport
+  results = pd.DataFrame({
+      'student_id': X_new['student_id'],
+      'risk_probability': y_pred_proba,
+      'predicted_risk': y_pred,
+      'intervention_needed': y_pred == 1
+  })
+  
+  results.to_csv('predictions.csv', index=False)
+  ```
+
+6.3 API ENDPOINT (Flask)
+─────────────────────────
+
+  ```python
+  from flask import Flask, request, jsonify
+  import pickle
+  
+  app = Flask(__name__)
+  
+  # Charger modèle au démarrage
+  model = HybridGNNModel(input_dim=9)
+  model.load_state_dict(torch.load('models/student_risk_gnn.pt'))
+  scaler = pickle.load(open('models/scaler.pkl', 'rb'))
+  
+  @app.route('/predict', methods=['POST'])
+  def predict():
+      data = request.json
+      
+      # Parser input
+      X = np.array([data.values()])
+      X_scaled = scaler.transform(X)
+      
+      # Prédire
+      with torch.no_grad():
+          prob = model(X_scaled).item()
+      
+      return jsonify({
+          'risk_probability': float(prob),
+          'at_risk': prob > 0.45,
+          'intervention_tier': (
+              'urgent' if prob > 0.80 else
+              'planned' if prob > 0.50 else
+              'monitoring' if prob > 0.35 else
+              'low_risk'
+          )
+      })
+  
+  if __name__ == '__main__':
+      app.run(debug=False, port=5000)
+  ```
+
+  Usage:
+  ```bash
+  curl -X POST http://localhost:5000/predict \
+    -H "Content-Type: application/json" \
+    -d '{"G1": 10, "G2": 11, "G3": 12, ...}'
+  ```
+
+6.4 MONITORING EN PRODUCTION
+──────────────────────────────
+
+  Créer fonction de validation continues:
+  
+  ```python
+  def monitor_model_performance(predictions_file, actuals_file):
+      """Valide performance sur données réelles"""
+      
+      pred = pd.read_csv(predictions_file)
+      actual = pd.read_csv(actuals_file)
+      
+      # Calcul métriques
+      auc = roc_auc_score(actual['risk'], pred['risk_prob'])
+      recall = recall_score(actual['risk'], pred['risk_pred'])
+      
+      # Alerte si dérive
+      if auc < 0.90:  # Seuil acceptable
+          print("⚠️  MODEL DRIFT DETECTED: AUC =", auc)
+          return False
+      
+      print(f"✅ Model OK - AUC: {auc:.4f}, Recall: {recall:.4f}")
+      return True
+  
+  # Exécuter mensuellement
+  import schedule
+  
+  schedule.every().month.do(monitor_model_performance, 
+                            'monthly_predictions.csv',
+                            'monthly_actuals.csv')
+  ```
+
+  Retraining déclenché si dérive:
+  
+  ```python
+  def retrain_if_needed(performance_ok):
+      if not performance_ok:
+          print("🔄 Launching retraining...")
+          # Charger données + réentraîner
+          # Sauvegarder nouveau modèle
+          # Tester sur test set historique
+          # Si meilleur → déployer
+  ```
+
+═══════════════════════════════════════════════════════════════════════════════
+7. BEST PRACTICES
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ DO:
+  • Toujours utiliser validation stratifiée (preserve class ratio)
+  • Monitorer train/test gap pour détecter overfitting
+  • Sauvegarder le scaler avec le modèle
+  • Documenter hyperparamètres utilisés
+  • Tracker performances en production
+  • Retrain régulièrement (3-6 mois)
+  • Faire A/B testing des interventions
+
+❌ DON'T:
+  • Ne pas oublier de normaliser inputs
+  • Ne pas mélanger train/test data
+  • Ne pas tuner hyperparamètres sur test set
+  • Ne pas ignorer class imbalance
+  • Ne pas déployer sans validation cross-validation
+  • Ne pas utiliser accuracy comme métrique principale
+
+═══════════════════════════════════════════════════════════════════════════════
+8. RÉFÉRENCES & RESSOURCES
+═══════════════════════════════════════════════════════════════════════════════
+
+Papiers Clés:
+  • GCN: Kipf & Welling (2017) "Semi-supervised Classification..."
+  • GAT: Veličković et al. (2018) "Graph Attention Networks"
+  • Class Imbalance: Lin et al. (2017) "Focal Loss for Dense Object Detection"
+
+PyTorch Geometric Documentation:
+  https://pytorch-geometric.readthedocs.io/
+
+Graph Neural Networks Overview:
+  https://distill.pub/2021/gnn-intro/
+
+═══════════════════════════════════════════════════════════════════════════════
+Pour questions/support: Voir DOCUMENTATION_COMPLETE.md
+═══════════════════════════════════════════════════════════════════════════════
