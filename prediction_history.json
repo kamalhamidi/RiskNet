@@ -1,0 +1,223 @@
+[
+  {
+    "timestamp": "2026-02-13T12:23:20.457100",
+    "student_id": "3",
+    "risk_score": 0.6099995970726013,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 10,
+      "G2": 10,
+      "G3": 10,
+      "avg_score": 10.0,
+      "failures": 0,
+      "studytime": 2.0,
+      "absences": 5,
+      "engagement_score": 1.5,
+      "progression": 0.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:23:36.735482",
+    "student_id": "3",
+    "risk_score": 0.7171477675437927,
+    "status": "AT RISK",
+    "student_data": {
+      "G1": 20,
+      "G2": 20,
+      "G3": 20,
+      "avg_score": 20.0,
+      "failures": 0,
+      "studytime": 5.5,
+      "absences": 0,
+      "engagement_score": 1.1,
+      "progression": 0.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:23:52.100118",
+    "student_id": "3",
+    "risk_score": 0.5346620678901672,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 20,
+      "G2": 20,
+      "G3": 20,
+      "avg_score": 20.0,
+      "failures": 0,
+      "studytime": 3.0,
+      "absences": 0,
+      "engagement_score": 3.0,
+      "progression": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:24:00.955737",
+    "student_id": "3",
+    "risk_score": 0.5269960761070251,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 18,
+      "G2": 20,
+      "G3": 20,
+      "avg_score": 20.0,
+      "failures": 0,
+      "studytime": 3.0,
+      "absences": 0,
+      "engagement_score": 3.0,
+      "progression": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:24:06.323704",
+    "student_id": "3",
+    "risk_score": 0.5274109244346619,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 18,
+      "G2": 17,
+      "G3": 20,
+      "avg_score": 20.0,
+      "failures": 0,
+      "studytime": 3.0,
+      "absences": 0,
+      "engagement_score": 3.0,
+      "progression": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:24:11.774866",
+    "student_id": "3",
+    "risk_score": 0.5179115533828735,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 18,
+      "G2": 17,
+      "G3": 18,
+      "avg_score": 20.0,
+      "failures": 0,
+      "studytime": 3.0,
+      "absences": 0,
+      "engagement_score": 3.0,
+      "progression": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:24:17.344524",
+    "student_id": "3",
+    "risk_score": 0.5180593132972717,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 18,
+      "G2": 17,
+      "G3": 18,
+      "avg_score": 17.2,
+      "failures": 0,
+      "studytime": 3.0,
+      "absences": 0,
+      "engagement_score": 3.0,
+      "progression": 1.0
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:28:34.525392",
+    "student_id": "22322",
+    "risk_score": 0.578154981136322,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 14,
+      "G2": 14,
+      "G3": 16,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 0.0,
+      "avg_score": 10.0,
+      "engagement_score": 1.5
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:29:32.595194",
+    "student_id": "22322",
+    "risk_score": 0.7102762460708618,
+    "status": "AT RISK",
+    "student_data": {
+      "G1": 14,
+      "G2": 6,
+      "G3": 16,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 0.0,
+      "avg_score": 10.0,
+      "engagement_score": 1.5
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:29:39.783075",
+    "student_id": "22322",
+    "risk_score": 0.7113505005836487,
+    "status": "AT RISK",
+    "student_data": {
+      "G1": 14,
+      "G2": 6,
+      "G3": 5,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 0.0,
+      "avg_score": 10.0,
+      "engagement_score": 1.5
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:29:46.451018",
+    "student_id": "22322",
+    "risk_score": 0.5816412568092346,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 14,
+      "G2": 17,
+      "G3": 15,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 0.0,
+      "avg_score": 10.0,
+      "engagement_score": 1.5
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:30:05.255504",
+    "student_id": "22322",
+    "risk_score": 0.5350991487503052,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 14,
+      "G2": 17,
+      "G3": 15,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 1.0,
+      "avg_score": 10.0,
+      "engagement_score": 1.5
+    }
+  },
+  {
+    "timestamp": "2026-02-13T12:30:12.867656",
+    "student_id": "22322",
+    "risk_score": 0.5340271592140198,
+    "status": "SAFE",
+    "student_data": {
+      "G1": 14,
+      "G2": 17,
+      "G3": 15,
+      "studytime": 2.0,
+      "absences": 5,
+      "failures": 0,
+      "progression": 1.0,
+      "avg_score": 9.0,
+      "engagement_score": 1.5
+    }
+  }
+]
