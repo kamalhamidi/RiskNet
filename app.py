@@ -1,7 +1,3 @@
-"""
-Streamlit Web Interface for GNN Student Risk Prediction
-Interactive dashboard for predicting student academic risk
-"""
 
 import streamlit as st
 import torch

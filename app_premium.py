@@ -33,276 +33,585 @@ st.markdown("""
     :root {
         --primary: #6366f1;
         --primary-dark: #4f46e5;
+        --secondary: #8b5cf6;
         --danger: #ef4444;
         --warning: #f59e0b;
         --success: #10b981;
         --dark: #1f2937;
         --light: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
     }
     
-    /* Remove default padding */
-    .main {
-        padding-top: 2rem;
+    /* Remove default padding and improve base */
+    * {
+        box-sizing: border-box;
+    }
+    
+    body, .main {
+        padding-top: 0;
+        background-color: #fafbfc;
+    }
+    
+    [data-testid="stAppViewContainer"] {
+        background-color: #fafbfc;
+    }
+    
+    /* Smooth Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+    }
+    
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
     
     /* Enhanced Typography */
     h1 {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
         font-weight: 800;
         background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
+        background-clip: text;
+        margin: 0 0 0.75rem 0;
+        letter-spacing: -0.03em;
+        animation: fadeIn 0.6s ease-out;
+        line-height: 1.1;
     }
     
     h2 {
-        font-size: 1.75rem;
+        font-size: 1.85rem;
         font-weight: 700;
         color: #1f2937;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
+        margin: 1.75rem 0 1rem 0;
+        padding-bottom: 0.75rem;
         border-bottom: 3px solid #6366f1;
-        padding-bottom: 0.5rem;
+        animation: slideInLeft 0.5s ease-out;
+        letter-spacing: -0.01em;
     }
     
     h3 {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
         font-weight: 600;
         color: #374151;
+        margin: 1.25rem 0 0.75rem 0;
+        animation: fadeIn 0.5s ease-out;
     }
     
     h4 {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 700;
         color: #1f2937;
-        margin-top: 1rem;
-        margin-bottom: 0.75rem;
+        margin: 1rem 0 0.5rem 0;
+        animation: fadeIn 0.4s ease-out;
+    }
+    
+    p {
+        line-height: 1.6;
+        color: #374151;
     }
     
     /* Card Styling */
     .card {
         background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border-radius: 14px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         border: 1px solid #e5e7eb;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeIn 0.5s ease-out;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
     
     .card:hover {
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-        transform: translateY(-2px);
+        transform: translateY(-6px);
+        border-color: #6366f1;
+    }
+    
+    .card:hover::before {
+        opacity: 1;
     }
     
     .card-success {
-        border-left: 4px solid #10b981;
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);
+        border-left: 5px solid #10b981;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.03), transparent);
+    }
+    
+    .card-success:hover {
+        border-left-color: #059669;
+        box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
     }
     
     .card-warning {
-        border-left: 4px solid #f59e0b;
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), transparent);
+        border-left: 5px solid #f59e0b;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.03), transparent);
+    }
+    
+    .card-warning:hover {
+        border-left-color: #d97706;
+        box-shadow: 0 12px 24px rgba(245, 158, 11, 0.15);
     }
     
     .card-danger {
-        border-left: 4px solid #ef4444;
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), transparent);
+        border-left: 5px solid #ef4444;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.03), transparent);
     }
     
-    /* Button Styling */
+    .card-danger:hover {
+        border-left-color: #dc2626;
+        box-shadow: 0 12px 24px rgba(239, 68, 68, 0.15);
+    }
+    
+    /* Button Styling - Enhanced */
     .stButton > button {
         background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
         border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        padding: 0.85rem 1.75rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton > button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
     }
     
     .stButton > button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 14px 35px rgba(99, 102, 241, 0.4);
+        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
     }
     
     .stButton > button:active {
-        transform: translateY(-1px);
+        transform: translateY(-1px) scale(0.98);
+        box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
     }
     
     /* Slider Enhancement */
     .stSlider > div > div > div > div {
         background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        border-radius: 6px;
+    }
+    
+    .stSlider [data-baseweb="slider"] {
+        padding: 1rem 0;
     }
     
     /* Metric Cards */
     .metric-card {
-        background: white;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff, #f8f9ff);
+        border-radius: 14px;
         padding: 1.5rem;
         text-align: center;
-        border: 1px solid #e5e7eb;
-        transition: all 0.3s ease;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeIn 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: right 0.5s ease;
     }
     
     .metric-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        transform: scale(1.06) translateY(-6px);
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+        border-color: #6366f1;
+    }
+    
+    .metric-card:hover::after {
+        right: 100%;
     }
     
     .metric-value {
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: 800;
         background: linear-gradient(135deg, #6366f1, #8b5cf6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin: 0.5rem 0;
+        background-clip: text;
+        margin: 0.75rem 0;
+        animation: pulse 2.5s ease-in-out infinite;
     }
     
     .metric-label {
-        font-size: 0.875rem;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
         color: #6b7280;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
     }
     
-    /* Risk Badge */
+    /* Risk Badge - Enhanced */
     .risk-badge {
         display: inline-block;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 700;
+        padding: 0.85rem 1.75rem;
+        border-radius: 30px;
+        font-weight: 800;
         font-size: 1.1rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        animation: scaleIn 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .risk-badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.6s ease;
+    }
+    
+    .risk-badge:hover::before {
+        left: 100%;
     }
     
     .risk-badge-safe {
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
     
     .risk-badge-warning {
         background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
     
     .risk-badge-danger {
         background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
     }
     
     /* Input Enhancement */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > select,
     .stNumberInput > div > div > input {
-        border-radius: 8px;
+        border-radius: 10px;
         border: 2px solid #e5e7eb;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
+        padding: 0.9rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background-color: #fafbfc;
+        font-weight: 500;
+        letter-spacing: 0.01em;
     }
     
     .stTextInput > div > div > input:focus,
     .stSelectbox > div > div > select:focus,
     .stNumberInput > div > div > input:focus {
         border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         background-color: white;
+        outline: none;
     }
     
-    /* Tab Styling */
+    /* Tab Styling - Enhanced */
     .stTabs [data-baseweb="tab-list"] {
         gap: 1rem;
         background-color: transparent;
-        border-bottom: 2px solid #e5e7eb;
+        border-bottom: 3px solid #e5e7eb;
+        padding: 0 0 1rem 0;
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px 8px 0 0;
-        padding: 1rem 1.5rem;
+        border-radius: 10px 10px 0 0;
+        padding: 1rem 1.75rem;
         background-color: #f3f4f6;
-        border: none;
-        transition: all 0.3s ease;
-        font-weight: 600;
+        border: 2px solid transparent;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #6b7280;
+        position: relative;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: #e5e7eb;
+        color: #374151;
     }
     
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        transform: translateY(-2px);
+        border-color: transparent;
     }
     
     /* Divider Enhancement */
     hr {
         border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #d1d5db, transparent);
-        margin: 2rem 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #d1d5db 20%, #d1d5db 80%, transparent);
+        margin: 2.5rem 0;
+        opacity: 0.6;
     }
     
     /* Info Box */
     .info-box {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-        border-left: 4px solid #6366f1;
-        padding: 1rem;
-        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+        border-left: 5px solid #6366f1;
+        border-radius: 10px;
+        padding: 1.2rem 1.5rem;
+        margin: 1.25rem 0;
+        font-weight: 600;
+        animation: fadeIn 0.5s ease-out;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+        color: #1f2937;
+    }
+    
+    /* Progress Bar */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    }
+    
+    .stProgress {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    /* Enhanced Alert Messages */
+    .stAlert {
+        border-radius: 10px;
+        padding: 1.25rem 1.5rem;
+        border-left: 5px solid;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        animation: slideInRight 0.4s ease-out;
         margin: 1rem 0;
         font-weight: 500;
+    }
+    
+    .stError {
+        border-left-color: #ef4444;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent);
+        color: #7f1d1d;
+    }
+    
+    .stWarning {
+        border-left-color: #f59e0b;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), transparent);
+        color: #78350f;
+    }
+    
+    .stSuccess {
+        border-left-color: #10b981;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), transparent);
+        color: #065f46;
+    }
+    
+    .stInfo {
+        border-left-color: #6366f1;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), transparent);
+        color: #1e1b4b;
+    }
+    
+    /* Markdown Links */
+    a {
+        color: #6366f1;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    a::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        transition: width 0.3s ease;
+    }
+    
+    a:hover {
+        color: #8b5cf6;
+    }
+    
+    a:hover::after {
+        width: 100%;
+    }
+    
+    /* Custom Section Headers */
+    .section-header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 1.25rem 1.75rem;
+        border-radius: 12px;
+        margin: 1.75rem 0 1.5rem 0;
+        font-weight: 800;
+        font-size: 1.15rem;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+        animation: slideInLeft 0.5s ease-out;
+        letter-spacing: 0.03em;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .section-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: right 0.6s ease;
+    }
+    
+    .section-header:hover::before {
+        right: 100%;
     }
     
     /* Dataframe Enhancement */
     .streamlit-expanderHeader {
         background-color: #f9fafb;
         border-radius: 8px;
+        border-left: 4px solid #6366f1;
+        font-weight: 700;
     }
     
     /* Scrollable Container */
     .scrollable-container {
         max-height: 500px;
         overflow-y: auto;
-        border-radius: 8px;
+        border-radius: 10px;
         border: 1px solid #e5e7eb;
-        padding: 1rem;
+        padding: 1.25rem;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
     
-    /* Progress Bar */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    .scrollable-container::-webkit-scrollbar {
+        width: 8px;
     }
     
-    /* Markdown Links */
-    a {
-        color: #6366f1;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
+    .scrollable-container::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        border-radius: 10px;
     }
     
-    a:hover {
-        color: #8b5cf6;
-        text-decoration: underline;
+    .scrollable-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6366f1, #8b5cf6);
+        border-radius: 10px;
     }
     
-    /* Custom Section Headers */
-    .section-header {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        margin: 1.5rem 0 1rem 0;
-        font-weight: 700;
-        font-size: 1.1rem;
+    .scrollable-container::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #8b5cf6, #a78bfa);
     }
     
-    /* Responsive Design */
-    @media (max-width: 768px) {
+    /* Responsive Design - Mobile First */
+    @media (max-width: 1024px) {
         h1 {
-            font-size: 2rem;
+            font-size: 2.25rem;
         }
         
         h2 {
@@ -310,7 +619,107 @@ st.markdown("""
         }
         
         .card {
+            padding: 1.25rem;
+        }
+        
+        .metric-card {
             padding: 1rem;
+        }
+        
+        .section-header {
+            font-size: 1rem;
+            padding: 1rem 1.25rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.85rem;
+        }
+        
+        h2 {
+            font-size: 1.35rem;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        
+        .metric-card {
+            padding: 0.85rem;
+            border-radius: 10px;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+        }
+        
+        .risk-badge {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.95rem;
+        }
+        
+        .section-header {
+            font-size: 0.9rem;
+            padding: 0.85rem 1rem;
+            margin: 1rem 0 0.85rem 0;
+        }
+        
+        .stButton > button {
+            padding: 0.65rem 1.25rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Stack columns on mobile */
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+        
+        .card {
+            padding: 0.85rem;
+            border-radius: 8px;
+        }
+        
+        .metric-card {
+            padding: 0.75rem;
+        }
+        
+        .metric-value {
+            font-size: 1.75rem;
+        }
+        
+        .stButton > button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+        }
+    }
+    
+    /* Touch-friendly interactions for mobile */
+    @media (hover: none) and (pointer: coarse) {
+        .stButton > button {
+            padding: 0.9rem 1.75rem;
+        }
+        
+        .card:active {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
         }
     }
 </style>
@@ -431,16 +840,116 @@ def save_prediction(student_id, prediction, student_data):
 # HEADER
 # ============================================================================
 def render_header():
-    """Premium header with branding"""
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.markdown("# 🎓 Academic Risk Detector")
-        st.markdown("**✨ AI-powered early warning system for student success** | Powered by Graph Neural Networks")
-    with col2:
-        status_text = "🟢 Online" if DEVICE.type == 'cuda' else "💻 CPU Mode"
-        st.markdown(f"<div class='info-box'>{status_text}</div>", unsafe_allow_html=True)
-    
-    st.markdown("---")
+    """Premium header with branding and visual enhancements"""
+    st.markdown("""
+    <style>
+        .header-container {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            margin-top: 0;
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.7s ease-out;
+        }
+        
+        .header-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        .header-container::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .header-title {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+            line-height: 1.2;
+            color: white !important;
+            -webkit-text-fill-color: white !important;
+            text-align: center;
+        }
+        
+        .header-subtitle {
+            font-size: 1.05rem;
+            font-weight: 500;
+            opacity: 0.97;
+            margin: 0.75rem auto 0 auto;
+            position: relative;
+            z-index: 1;
+            line-height: 1.5;
+            color: white;
+            text-align: center;
+        }
+        
+        .header-badge {
+            display: block;
+            width: fit-content;
+            margin: 1.25rem auto 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.65rem 1.35rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.05em;
+            color: white;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+        
+        .header-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-container h1 {
+            color: white !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background: none !important;
+        }
+    </style>
+    <div class='header-container'>
+        <h1 class='header-title'>Academic Risk Detector</h1>
+        <p class='header-subtitle'>
+            ✨ AI-powered early warning system for student success<br>
+            Powered by Graph Neural Networks • Real-time Analysis
+        </p>
+        <div class='header-badge'>
+            """ + ("🟢 GPU Mode (CUDA)" if DEVICE.type == 'cuda' else "💻 CPU Mode") + """
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ============================================================================
 # MAIN APP
@@ -456,125 +965,154 @@ def main():
     # TAB 1: PREDICT
     # ========================================================================
     with tab1:
-        col_header1, col_header2 = st.columns([2, 1])
+        # Header with clear button
+        col_header1, col_header2 = st.columns([3, 1])
         with col_header1:
             st.markdown("<div class='section-header'>📝 Student Profile Input</div>", unsafe_allow_html=True)
         with col_header2:
-            clear_all = st.button("🔄 Reset Form", use_container_width=True)
+            st.markdown("""
+            <style>
+                .reset-btn {
+                    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+                    color: white !important;
+                    font-weight: 700 !important;
+                    padding: 0.75rem 1.5rem !important;
+                    border-radius: 10px !important;
+                    border: none !important;
+                    cursor: pointer !important;
+                    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                    width: 100% !important;
+                }
+                .reset-btn:hover {
+                    transform: translateY(-3px) scale(1.02) !important;
+                    box-shadow: 0 14px 35px rgba(245, 158, 11, 0.4) !important;
+                }
+                .reset-btn:active {
+                    transform: translateY(-1px) scale(0.98) !important;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            if st.button("🔄 Reset Form", use_container_width=True, key="reset_main", help="Clear all fields and start fresh"):
+                st.success("✅ Form reset! All fields cleared.", icon="✨")
+                st.rerun()
         
-        # Student ID Section
-        st.markdown("##### 👤 Student Information")
+        # Student ID Section - Improved
+        st.markdown("<div style='margin: 1.5rem 0 1rem 0;'><h4 style='margin: 0;'>👤 Student Information</h4></div>", unsafe_allow_html=True)
         student_id = st.text_input(
             "Student ID",
             placeholder="e.g., STU-2024-001",
             key="student_id_input",
             help="Enter a unique identifier for this student"
         )
+        if not student_id:
+            st.caption("ℹ️ Student ID is required for saving predictions to history")
         
-        # Academic Performance Section
-        st.markdown("##### 📚 Academic Performance")
-        st.markdown("*Enter grades for each grading period (0-20 scale)*")
+        # Academic Performance Section - Improved
+        st.markdown("<div style='margin: 1.75rem 0 1rem 0;'><h4 style='margin: 0;'>📚 Academic Performance</h4><p style='margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.9rem;'>Enter grades for each grading period (0-20 scale)</p></div>", unsafe_allow_html=True)
         
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4 = st.columns(4, gap="medium")
         
         with col1:
-            st.markdown("**Period 1**")
+            st.markdown("<div style='text-align: center; margin-bottom: 0.75rem;'><strong>📋 Period 1</strong></div>", unsafe_allow_html=True)
             g1 = st.slider("G1", 0, 20, 10, key="g1_slider",
-                          help="First period grade")
-            progress_g1 = g1 / 20
-            st.progress(progress_g1, text=f"{g1}/20")
+                          help="First period grade", label_visibility="collapsed")
+            g1_badge = "🟢 Excellent" if g1 >= 16 else "🟡 Good" if g1 >= 10 else "🔴 Needs Work"
+            g1_color = "#10b981" if g1 >= 16 else "#f59e0b" if g1 >= 10 else "#ef4444"
+            st.markdown(f"<div style='background: {g1_color}20; border-left: 3px solid {g1_color}; padding: 0.65rem; border-radius: 6px; text-align: center; font-size: 0.9rem; font-weight: 600;'>{g1_badge}</div>", unsafe_allow_html=True)
         
         with col2:
-            st.markdown("**Period 2**")
+            st.markdown("<div style='text-align: center; margin-bottom: 0.75rem;'><strong>📋 Period 2</strong></div>", unsafe_allow_html=True)
             g2 = st.slider("G2", 0, 20, 10, key="g2_slider",
-                          help="Second period grade")
-            progress_g2 = g2 / 20
-            st.progress(progress_g2, text=f"{g2}/20")
+                          help="Second period grade", label_visibility="collapsed")
+            g2_badge = "🟢 Excellent" if g2 >= 16 else "🟡 Good" if g2 >= 10 else "🔴 Needs Work"
+            g2_color = "#10b981" if g2 >= 16 else "#f59e0b" if g2 >= 10 else "#ef4444"
+            st.markdown(f"<div style='background: {g2_color}20; border-left: 3px solid {g2_color}; padding: 0.65rem; border-radius: 6px; text-align: center; font-size: 0.9rem; font-weight: 600;'>{g2_badge}</div>", unsafe_allow_html=True)
         
         with col3:
-            st.markdown("**Final Grade**")
+            st.markdown("<div style='text-align: center; margin-bottom: 0.75rem;'><strong>🎓 Final Grade</strong></div>", unsafe_allow_html=True)
             g3 = st.slider("G3", 0, 20, 10, key="g3_slider",
-                          help="Final grade")
-            progress_g3 = g3 / 20
-            st.progress(progress_g3, text=f"{g3}/20")
+                          help="Final grade", label_visibility="collapsed")
+            g3_badge = "🟢 Excellent" if g3 >= 16 else "🟡 Good" if g3 >= 10 else "🔴 Needs Work"
+            g3_color = "#10b981" if g3 >= 16 else "#f59e0b" if g3 >= 10 else "#ef4444"
+            st.markdown(f"<div style='background: {g3_color}20; border-left: 3px solid {g3_color}; padding: 0.65rem; border-radius: 6px; text-align: center; font-size: 0.9rem; font-weight: 600;'>{g3_badge}</div>", unsafe_allow_html=True)
         
         with col4:
-            st.markdown("**Average**")
+            st.markdown("<div style='text-align: center; margin-bottom: 0.75rem;'><strong>⭐ Average</strong></div>", unsafe_allow_html=True)
             avg_grade = (g1 + g2 + g3) / 3
             st.markdown(f"""
-            <div class='card' style='text-align: center; background: linear-gradient(135deg, #f0f9ff, #e0f2fe);'>
-                <div style='font-size: 1.8rem; font-weight: 800; color: #0284c7;'>{avg_grade:.1f}</div>
-                <div style='font-size: 0.85rem; color: #6b7280; font-weight: 600;'>Average</div>
+            <div class='card' style='text-align: center; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px solid #0284c7; margin-top: 0.35rem;'>
+                <div style='font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #0284c7, #0369a1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;'>{avg_grade:.1f}</div>
+                <div style='font-size: 0.8rem; color: #0c4a6e; font-weight: 700; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;'>Average</div>
             </div>
             """, unsafe_allow_html=True)
         
-        # Overall Progress
-        overall_progress = avg_grade / 20
-        st.progress(overall_progress, text=f"Overall Academic Progress: {overall_progress:.0%}")
+        st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin: 1.75rem 0 1rem 0;'><h4 style='margin: 0;'>👥 Engagement & Behavior</h4></div>", unsafe_allow_html=True)
         
-        st.markdown("---")
-        
-        # Engagement & Behavior Section
-        st.markdown("##### 👥 Engagement & Behavior")
-        
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3, gap="medium")
         
         with col1:
-            st.markdown("**⏱️ Study Commitment**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>⏱️ Study Commitment</strong></div>", unsafe_allow_html=True)
             study_hours = st.slider("Weekly Study Hours", 0.0, 10.0, 2.0, 0.5,
                                    key="study_slider",
-                                   help="Average hours spent studying per week")
+                                   help="Average hours spent studying per week", label_visibility="collapsed")
             study_badge = "🟢 Excellent" if study_hours >= 5 else "🟡 Moderate" if study_hours >= 2 else "🔴 Low"
-            st.caption(f"Status: {study_badge}")
+            study_color = "#10b981" if study_hours >= 5 else "#f59e0b" if study_hours >= 2 else "#ef4444"
+            st.markdown(f"<div style='background: {study_color}20; border-left: 3px solid {study_color}; padding: 0.65rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;'>{study_badge} • {study_hours:.1f}h/week</div>", unsafe_allow_html=True)
         
         with col2:
-            st.markdown("**🎯 Engagement Level**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>🎯 Engagement Level</strong></div>", unsafe_allow_html=True)
             engagement_score = st.slider("Engagement Score", 0.0, 3.0, 1.5, 0.1,
                                         key="engagement_slider",
-                                        help="Class participation and attentiveness (0-3)")
-            engagement_pct = (engagement_score / 3) * 100
-            st.progress(engagement_pct / 100, text=f"{engagement_score:.1f}/3.0")
+                                        help="Class participation and attentiveness (0-3)", label_visibility="collapsed")
+            engagement_badge = "🟢 Excellent" if engagement_score >= 2.3 else "🟡 Good" if engagement_score >= 1.5 else "🔴 Low"
+            engagement_color = "#10b981" if engagement_score >= 2.3 else "#f59e0b" if engagement_score >= 1.5 else "#ef4444"
+            st.markdown(f"<div style='background: {engagement_color}20; border-left: 3px solid {engagement_color}; padding: 0.65rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;'>{engagement_badge} • {engagement_score:.1f}/3.0</div>", unsafe_allow_html=True)
         
         with col3:
-            st.markdown("**📍 Attendance**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>📍 Attendance</strong></div>", unsafe_allow_html=True)
             absences = st.slider("Number of Absences", 0, 50, 5,
                                 key="absences_slider",
-                                help="Total class absences")
+                                help="Total class absences", label_visibility="collapsed")
             absence_status = "🟢 Good" if absences <= 5 else "🟡 Fair" if absences <= 15 else "🔴 Poor"
-            st.caption(f"Status: {absence_status}")
+            absence_color = "#10b981" if absences <= 5 else "#f59e0b" if absences <= 15 else "#ef4444"
+            st.markdown(f"<div style='background: {absence_color}20; border-left: 3px solid {absence_color}; padding: 0.65rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;'>{absence_status} • {absences} absences</div>", unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
         
-        # Additional Metrics
-        st.markdown("##### 📊 Academic History & Progress")
+        # Additional Metrics - Improved
+        st.markdown("<div style='margin: 1.75rem 0 1rem 0;'><h4 style='margin: 0;'>📊 Academic History & Progress</h4></div>", unsafe_allow_html=True)
         
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4 = st.columns(4, gap="medium")
         
         with col1:
-            st.markdown("**Previous Failures**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>❌ Previous Failures</strong></div>", unsafe_allow_html=True)
             failures = st.slider("Course Failures", 0, 10, 0,
                                 key="failures_slider",
-                                help="Number of courses previously failed")
+                                help="Number of courses previously failed", label_visibility="collapsed")
             failure_risk = "🟢 None" if failures == 0 else "🟡 Some" if failures <= 2 else "🔴 Multiple"
-            st.caption(failure_risk)
+            failure_color = "#10b981" if failures == 0 else "#f59e0b" if failures <= 2 else "#ef4444"
+            st.markdown(f"<div style='background: {failure_color}20; border-left: 3px solid {failure_color}; padding: 0.65rem; border-radius: 6px; text-align: center; font-weight: 600;'>{failure_risk}</div>", unsafe_allow_html=True)
         
         with col2:
-            st.markdown("**Average Score**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>📈 Average Score</strong></div>", unsafe_allow_html=True)
             avg_score = st.number_input("Overall Average", 0.0, 20.0, 10.0, 0.5,
-                                       key="avg_score_input")
+                                       key="avg_score_input", label_visibility="collapsed")
             st.progress(avg_score / 20, text=f"{avg_score:.1f}/20")
         
         with col3:
-            st.markdown("**Progress Stage**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>🎯 Progress Stage</strong></div>", unsafe_allow_html=True)
             progression = st.selectbox(
                 "Course Progression",
                 [0, 1, 2],
                 format_func=lambda x: {0: "🔴 Early Stage", 1: "🟡 On-Track", 2: "🟢 Advanced"}[x],
-                key="progression_select"
+                key="progression_select", label_visibility="collapsed"
             )
         
         with col4:
-            st.markdown("**Study Time Category**")
+            st.markdown("<div style='margin-bottom: 0.75rem;'><strong>⭐ Study Status</strong></div>", unsafe_allow_html=True)
             if study_hours >= 5:
                 study_status = "Excellent"
                 study_color = "#10b981"
@@ -586,24 +1124,25 @@ def main():
                 study_color = "#ef4444"
             
             st.markdown(f"""
-            <div style='background-color: {study_color}33; border-left: 4px solid {study_color}; padding: 0.75rem; border-radius: 6px;'>
-                <div style='font-size: 0.85rem; color: {study_color}; font-weight: 700;'>{study_status.upper()}</div>
-                <div style='color: #6b7280;'>{study_hours:.1f}h/week</div>
+            <div style='background: {study_color}20; border-left: 3px solid {study_color}; padding: 0.65rem; border-radius: 6px; text-align: center;'>
+                <div style='font-size: 0.85rem; color: {study_color}; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;'>{study_status}</div>
+                <div style='color: #6b7280; font-weight: 600; margin-top: 0.35rem;'>{study_hours:.1f}h/week</div>
             </div>
             """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
         
-        # Action Buttons
-        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 2])
+        # Action Buttons - Improved
+        col_btn1, col_btn2, col_btn3 = st.columns([1.5, 1, 2], gap="small")
         
         with col_btn1:
-            predict_btn = st.button("🔮 PREDICT RISK", use_container_width=True, key="predict_btn")
+            predict_btn = st.button("🔮 PREDICT RISK", use_container_width=True, key="predict_btn", help="Analyze student data and generate risk prediction")
         
         with col_btn2:
-            clear_btn = st.button("🔄 Clear", use_container_width=True)
+            clear_btn = st.button("🔄 Clear", use_container_width=True, help="Reset all form fields", key="clear_btn_action")
         
-        if clear_btn or clear_all:
+        if clear_btn:
+            st.success("✅ Form cleared! Ready for new input.", icon="✨")
             st.rerun()
         
         # ====================================================================
@@ -633,18 +1172,18 @@ def main():
                 with col1:
                     # Risk Gauge
                     fig_gauge = go.Figure(go.Indicator(
-                        mode="gauge+number",
+                        mode="gauge+number+delta",
                         value=risk_score * 100,
                         title={'text': "Risk Score", 'font': {'size': 16}},
                         domain={'x': [0, 1], 'y': [0, 1]},
-                        suffix="%",
+                        number={'suffix': "%", 'font': {'size': 24}},
                         gauge={
                             'axis': {'range': [0, 100]},
                             'bar': {'color': "#6366f1", 'thickness': 0.7},
                             'steps': [
                                 {'range': [0, 33], 'color': "#d1f5ea"},
                                 {'range': [33, 66], 'color': "#fed7aa"},
-                                {'range': [66, 100], 'color': "#fed7aa"}
+                                {'range': [66, 100], 'color': "#fecaca"}
                             ],
                             'threshold': {
                                 'line': {'color': "#ef4444", 'width': 4},
@@ -672,6 +1211,7 @@ def main():
                         • Identify knowledge gaps immediately
                         """
                         color = "danger"
+                        card_color = "danger"
                     elif risk_score > 0.55:
                         status = "🟡 MEDIUM RISK"
                         status_emoji = "⚠️"
@@ -686,6 +1226,7 @@ def main():
                         • Consider study skills workshop
                         """
                         color = "warning"
+                        card_color = "warning"
                     else:
                         status = "🟢 SAFE"
                         status_emoji = "✅"
@@ -699,11 +1240,12 @@ def main():
                         • Explore advanced opportunities
                         • Consider mentoring other students
                         """
-                        color = "success"
+                        color = "safe"
+                        card_color = "success"
                     
                     badge_html = f"<span class='risk-badge risk-badge-{color}'>{status}</span>"
                     st.markdown(badge_html, unsafe_allow_html=True)
-                    st.markdown(f"<div class='card card-{color}'>{recommendation}</div>", 
+                    st.markdown(f"<div class='card card-{card_color}'>{recommendation}</div>", 
                                unsafe_allow_html=True)
                 
                 with col3:
